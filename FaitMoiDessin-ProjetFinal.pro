@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = FaitMoiDessin-ProjetFinal
 TEMPLATE = app

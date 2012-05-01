@@ -20,14 +20,13 @@ public:
 private slots:
     void on_btnChoisirCouleur_clicked();
 
-    void on_lblDessin_linkActivated(const QString &link);
-
 private:
     Ui::FaitMoiDessin *ui;
     QColor m_couleur;
     int m_r;
     int m_g;
     int m_b;
+
 };
 
 #endif // FAITMOIDESSIN_H

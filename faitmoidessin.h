@@ -6,7 +6,7 @@
 
 #ifndef FAITMOIDESSIN_H
 #define FAITMOIDESSIN_H
-
+#include <QtGui>
 #include <QMainWindow>
 #include <QColor>
 #include <QTcpSocket>
@@ -23,17 +23,21 @@ class FaitMoiDessin : public QMainWindow
 public:
     explicit FaitMoiDessin(QWidget *parent = 0);
     ~FaitMoiDessin();
-    
+
 private slots:
     void on_btnChoisirCouleur_clicked();
+    void mousePressEvent(QMouseEvent * );
+    void mouseMoveEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
+    void paintEvent(QPaintEvent *);
 
 private:
     Ui::FaitMoiDessin *ui;
     QColor m_couleur;
+    QList<int> pointsList;
     QTcpSocket m_socket;
-    int m_r;
-    int m_g;
-    int m_b;
+    int m_r,m_g,m_b,m_x,m_y;
+    bool m_dessin;
 };
 
 #endif // FAITMOIDESSIN_H

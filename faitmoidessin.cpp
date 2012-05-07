@@ -9,6 +9,7 @@
 #include <QtGui>
 #include <QColorDialog>
 #include <QTcpSocket>
+#include <QPainter>
 
 FaitMoiDessin::FaitMoiDessin(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +17,7 @@ FaitMoiDessin::FaitMoiDessin(QWidget *parent) :
 {
     ui->setupUi(this);
     m_socket.connectToHost("172.16.10.1", 61500);
+    m_dessin = false;
 }
 
 FaitMoiDessin::~FaitMoiDessin()
@@ -26,13 +28,57 @@ FaitMoiDessin::~FaitMoiDessin()
 void FaitMoiDessin::on_btnChoisirCouleur_clicked()
 {
     QByteArray baCouleur;
-    QColor m_couleur = QColorDialog::getColor(Qt::white, this);
+    m_couleur = QColorDialog::getColor(Qt::white, ui->lblDessin);
     m_couleur.getRgb(&m_r,&m_g,&m_b);
     baCouleur.append(m_r);
     baCouleur.append(m_g);
     baCouleur.append(m_b);
     m_socket.write(baCouleur);
-    //ui->btnChoisirCouleur->setPalette(QColor((uchar)baCouleur[0],(uchar)baCouleur[1],(uchar)baCouleur[2]));
+    m_socket.disconnectFromHost();
+
+}
+void FaitMoiDessin::mouseMoveEvent(QMouseEvent * e)
+{
+    if(e->x()< 1015 && e->x() > 25 && e->y() > 20 && e->y() < 510)
+    {
+        pointsList.append(e->x());
+        pointsList.append(e->y());
+    }
+    else
+    {
+        m_dessin = false;
+    }
+    this->repaint();
+}
+void FaitMoiDessin::mousePressEvent(QMouseEvent * e)
+{
+    if(e->button() == Qt::RightButton)
+    {
+        if(e->x()< 1000 && e->y() < 500)
+        {
+            m_dessin = true;
+            //pointsList.append(e->x());
+            //pointsList.append(e->y());
+        }
+    }
 
 }
 
+void FaitMoiDessin::mouseReleaseEvent(QMouseEvent *)
+{
+    m_dessin = false;
+}
+
+void FaitMoiDessin::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPen pen;
+    pen.setColor(m_couleur);
+    pen.setWidth(10);
+    painter.setPen(pen);
+    for (int i = 0; i < pointsList.length(); i++)
+    {
+        painter.drawPoint(pointsList.at(i), pointsList[i + 1]);
+        i++;
+    }
+}

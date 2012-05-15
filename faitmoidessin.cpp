@@ -5,18 +5,14 @@
 /* *** Cégep Lévis-Lauzon *** */
 
 #include "faitmoidessin.h"
+#include "thjeu.h"
 #include "ui_faitmoidessin.h"
-#include <QtGui>
-#include <QColorDialog>
-#include <QTcpSocket>
-#include <QPainter>
 
 FaitMoiDessin::FaitMoiDessin(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FaitMoiDessin)
 {
     ui->setupUi(this);
-    m_socket.connectToHost("172.16.10.1", 61500);
     m_dessin = false;
 }
 
@@ -27,22 +23,15 @@ FaitMoiDessin::~FaitMoiDessin()
 
 void FaitMoiDessin::on_btnChoisirCouleur_clicked()
 {
-    QByteArray baCouleur;
     m_couleur = QColorDialog::getColor(Qt::white, ui->lblDessin);
-    m_couleur.getRgb(&m_r,&m_g,&m_b);
-    baCouleur.append(m_r);
-    baCouleur.append(m_g);
-    baCouleur.append(m_b);
-    m_socket.write(baCouleur);
-    m_socket.disconnectFromHost();
-
 }
 void FaitMoiDessin::mouseMoveEvent(QMouseEvent * e)
 {
-    if(e->x()< 1015 && e->x() > 25 && e->y() > 20 && e->y() < 510)
+    if(e->x()< 1010 && e->x() > 20 && e->y() > 20 && e->y() < 505)
     {
         pointsList.append(e->x());
         pointsList.append(e->y());
+        emit(siNouveauPoint(e->x(),e->y()));
     }
     else
     {
@@ -57,28 +46,44 @@ void FaitMoiDessin::mousePressEvent(QMouseEvent * e)
         if(e->x()< 1000 && e->y() < 500)
         {
             m_dessin = true;
-            //pointsList.append(e->x());
-            //pointsList.append(e->y());
+            pointsList.append(e->x());
+            pointsList.append(e->y());
+            emit(siNouveauPoint(e->x(),e->y()));
         }
     }
-
 }
-
+// PAS TOUCHE
 void FaitMoiDessin::mouseReleaseEvent(QMouseEvent *)
 {
     m_dessin = false;
 }
-
+// PAS TOUCHE
 void FaitMoiDessin::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QPen pen;
     pen.setColor(m_couleur);
-    pen.setWidth(10);
+    pen.setWidth(5);
     painter.setPen(pen);
     for (int i = 0; i < pointsList.length(); i++)
     {
-        painter.drawPoint(pointsList.at(i), pointsList[i + 1]);
-        i++;
+        if(m_baRole == "M")
+        {
+            painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
+            i++;
+        }
+        else
+            if(m_baRole == "C")
+            {
+                painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
+            }
     }
+
+}
+// PAS TOUCHE
+void FaitMoiDessin::on_btnConnexion_clicked()
+{
+    thJeu* threadJeu = new thJeu(ui->txtAdresse->text());
+    connect(this,SIGNAL(siNouveauPoint(int,int)),threadJeu,SLOT(slNouveauPoint(int,int)));
+    threadJeu->start();
 }

@@ -11,8 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        faitmoidessin.cpp
+        faitmoidessin.cpp \
+    thjeu.cpp
 
-HEADERS  += faitmoidessin.h
+HEADERS  += faitmoidessin.h \
+    thjeu.h
 
 FORMS    += faitmoidessin.ui

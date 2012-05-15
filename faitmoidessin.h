@@ -7,9 +7,9 @@
 #ifndef FAITMOIDESSIN_H
 #define FAITMOIDESSIN_H
 #include <QtGui>
-#include <QMainWindow>
-#include <QColor>
+#include <QColorDialog>
 #include <QTcpSocket>
+#include <QPainter>
 
 
 namespace Ui {
@@ -30,12 +30,19 @@ private slots:
     void mouseMoveEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *);
+    void on_btnConnexion_clicked();
+
+signals:
+    void siNouveauPoint(int, int);
 
 private:
     Ui::FaitMoiDessin *ui;
-    QColor m_couleur;
+    QColor m_couleur;           //Objet QColor contenant la valeur choisi par QColorDialog
     QList<int> pointsList;
-    QTcpSocket m_socket;
+    QList<QString> motList;
+    QTcpSocket *m_socket;
+    QByteArray m_baRole;
+    QByteArray baPoints;
     int m_r,m_g,m_b,m_x,m_y;
     bool m_dessin;
 };

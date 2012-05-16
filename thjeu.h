@@ -1,3 +1,9 @@
+/* *** Fait moi un dessin *** */
+/* *** Projet Final Linux *** */
+/* *** Jérémie Tremblay et Axel Gauthier-Bélanger *** */
+/* *** Mai 2012 *** */
+/* *** Cégep Lévis-Lauzon *** */
+
 #ifndef THJEU_H
 #define THJEU_H
 

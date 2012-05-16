@@ -1,3 +1,9 @@
+/* *** Fait moi un dessin *** */
+/* *** Projet Final Linux *** */
+/* *** Jérémie Tremblay et Axel Gauthier-Bélanger *** */
+/* *** Mai 2012 *** */
+/* *** Cégep Lévis-Lauzon *** */
+
 #include "thjeu.h"
 
 thJeu::thJeu(QString ip)
@@ -16,15 +22,15 @@ void thJeu::run()
         {
             if(m_baPoints.length()==4)
             {
-                m_socket.write(m_baPoints);                     // envoi de points dessinés vers le serveur
+                //envoi les points dessinés au serveur
+                m_socket.write(m_baPoints);
+                m_socket.waitForBytesWritten();
                 m_baPoints.clear();
             }
             else
             {
                 m_baPoints.clear();
             }
-            m_socket.waitForBytesWritten();                     // attend la fin de l'envoi
-
         }
     }
     else
@@ -33,9 +39,12 @@ void thJeu::run()
             while(1)
             {
                 m_socket.waitForReadyRead();
+                //lecture de tout les caractères
                 m_baPoints = m_socket.read(m_socket.bytesAvailable());
+                //décalage des bytes en int
                 int x = (m_baPoints[0] << 8) + static_cast<uchar>(m_baPoints[1]);
                 int y = (m_baPoints[2] << 8) + static_cast<uchar>(m_baPoints[3]);
+                //appel le signal déclenchant le paint
                 emit(siPaint(x,y));
                 m_baPoints.clear();
             }
@@ -45,6 +54,7 @@ void thJeu::run()
 void thJeu::slNouveauPoint(int x, int y)
 {
     m_baPoints.clear();
+    //décalage des bytes pour les avoir en int
     m_baPoints.append(x >> 8);
     m_baPoints.append(x);
     m_baPoints.append(y >> 8);

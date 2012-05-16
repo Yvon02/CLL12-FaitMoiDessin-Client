@@ -51,13 +51,14 @@ void FaitMoiDessin::mousePressEvent(QMouseEvent * e)
             emit(siNouveauPoint(e->x(),e->y()));
         }
     }
+    this->repaint();
 }
-// PAS TOUCHE
+
 void FaitMoiDessin::mouseReleaseEvent(QMouseEvent *)
 {
     m_dessin = false;
 }
-// PAS TOUCHE
+
 void FaitMoiDessin::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -67,23 +68,24 @@ void FaitMoiDessin::paintEvent(QPaintEvent *)
     painter.setPen(pen);
     for (int i = 0; i < pointsList.length(); i++)
     {
-        if(m_baRole == "M")
-        {
-            painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
-            i++;
-        }
-        else
-            if(m_baRole == "C")
-            {
-                painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
-            }
+       painter.setPen(pen);
+       painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
+       i++;
     }
-
 }
-// PAS TOUCHE
+
 void FaitMoiDessin::on_btnConnexion_clicked()
 {
-    thJeu* threadJeu = new thJeu(ui->txtAdresse->text());
+    QString adresse = ui->txtAdresse->text();
+    thJeu* threadJeu = new thJeu(adresse);
     connect(this,SIGNAL(siNouveauPoint(int,int)),threadJeu,SLOT(slNouveauPoint(int,int)));
+    connect(threadJeu,SIGNAL(siPaint(int, int)),this,SLOT(slPaint(int,int)));
     threadJeu->start();
+}
+
+void FaitMoiDessin::slPaint(int x, int y)
+{
+    pointsList.append(x);
+    pointsList.append(y);
+    this->repaint();
 }

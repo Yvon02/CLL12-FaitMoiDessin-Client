@@ -12,7 +12,7 @@ public:
     explicit thJeu(QString ip);
     void run();
 signals:
-    void siPaint();
+    void siPaint(int, int);
 public slots:
     void slNouveauPoint(int, int);
 private:

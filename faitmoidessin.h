@@ -8,7 +8,6 @@
 #define FAITMOIDESSIN_H
 #include <QtGui>
 #include <QColorDialog>
-#include <QTcpSocket>
 #include <QPainter>
 
 
@@ -34,13 +33,13 @@ private slots:
 
 signals:
     void siNouveauPoint(int, int);
-
+public slots:
+    void slPaint(int,int);
 private:
     Ui::FaitMoiDessin *ui;
     QColor m_couleur;           //Objet QColor contenant la valeur choisi par QColorDialog
     QList<int> pointsList;
     QList<QString> motList;
-    QTcpSocket *m_socket;
     QByteArray m_baRole;
     QByteArray baPoints;
     int m_r,m_g,m_b,m_x,m_y;

@@ -13,25 +13,20 @@ thJeu::thJeu(QString ip)
 
 void thJeu::run()
 {
+    m_Connection = true;
     m_socket.connectToHost(m_ip, 61500);                        // se connecte au serveur
     m_socket.waitForReadyRead();                                // attend une réponse du serveur
     m_baRole = m_socket.read(m_socket.bytesAvailable());        // recoit la réponse
     QByteArray Point;
     if(m_baRole== "M")
     {
-        while(1)
+        srand(time(NULL));
+        emit(siNouveauMot((rand() % 6)));
+
+        m_socket.write(m_Mot);
+        m_socket.waitForBytesWritten();
+        while(m_Connection)
         {
-           /* if(m_baPoints.length()==4)
-            {
-                //envoi les points dessinés au serveur
-                m_socket.write(m_baPoints);
-                m_socket.waitForBytesWritten();
-                m_baPoints.clear();
-            }
-            else
-            {
-                m_baPoints.clear();
-            }*/
             if(m_baPoints.size() >= 4)
             {
                 while(m_baPoints.size() >= 4)
@@ -43,11 +38,13 @@ void thJeu::run()
                 }
             }
         }
+
     }
     else
         if(m_baRole== "C")
         {
-            while(1)
+            emit(siClient());
+            while(m_Connection)
             {
                 m_socket.waitForReadyRead();
                 //lecture de tout les caractères
@@ -58,6 +55,7 @@ void thJeu::run()
                 //appel le signal déclenchant le paint
                 emit(siPaint(x,y));
                 m_baPoints.clear();
+
             }
         }
 }
@@ -70,4 +68,23 @@ void thJeu::slNouveauPoint(int x, int y)
     m_baPoints.append(x);
     m_baPoints.append(y >> 8);
     m_baPoints.append(y);
+}
+void thJeu::slGetMot(QString Mot)
+{
+    m_Mot.clear();
+    m_Mot.append(Mot);
+}
+void thJeu::slEssais(QByteArray Essais)
+{
+    m_Mot.clear();
+    m_Mot.append('#');
+    m_Mot = Essais;
+    m_socket.write(m_Mot);
+    m_socket.waitForBytesWritten();
+    m_Mot.clear();
+
+}
+void thJeu::slDeconnection()
+{
+    m_Connection = false;
 }

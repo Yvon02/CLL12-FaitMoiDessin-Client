@@ -31,15 +31,25 @@ private slots:
     void paintEvent(QPaintEvent *);
     void on_btnConnexion_clicked();
 
+    void on_btnEssai_clicked();
+
+    void on_btnDeco_clicked();
+
 signals:
     void siNouveauPoint(int, int);
+    void siSendMot(QByteArray);
+    void siEssais(QByteArray);
+    void siDeconnection();
 public slots:
     void slPaint(int,int);
+    void slNouveauMot(int);
+    void slClient();
 private:
     Ui::FaitMoiDessin *ui;
     QColor m_couleur;           //Objet QColor contenant la valeur choisi par QColorDialog
     QList<int> pointsList;
     QList<QString> motList;
+    QByteArray m_mot;
     QByteArray m_baRole;
     QByteArray baPoints;
     int m_r,m_g,m_b,m_x,m_y;

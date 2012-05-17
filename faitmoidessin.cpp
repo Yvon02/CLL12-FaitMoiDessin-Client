@@ -14,6 +14,15 @@ FaitMoiDessin::FaitMoiDessin(QWidget *parent) :
 {
     ui->setupUi(this);
     m_dessin = false;
+    motList.append("chat");
+    motList.append("poney");
+    motList.append("diablo");
+    motList.append("coucher de soleil");
+    motList.append("compotte");
+    motList.append("Felix");
+    motList.append("chatnoir");
+    ui->btnEssai->setVisible(false);
+    ui->txtEssai->setVisible(false);
 }
 
 FaitMoiDessin::~FaitMoiDessin()
@@ -71,25 +80,14 @@ void FaitMoiDessin::paintEvent(QPaintEvent *)
 {
     //initialisation d'un objet QPainter pour dessiner
     QPainter painter(this);
-    QPen pen, pen2;
+    QPen pen;
     pen.setColor(m_couleur);
     pen.setWidth(5);
-    pen2.setColor(m_couleur);
-    pen2.setWidth(10);
     painter.setPen(pen);
     //dessine l'ensemble des points se trouvant dans la liste
     for (int i = 0; i < pointsList.length(); i++)
     {
-        if(i < 4)
-        {
-            painter.setPen(pen);
-            painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
-        }
-        else
-        {
-            painter.setPen(pen2);
-            painter.drawLine(pointsList.at(i - 2),pointsList.at(i - 1), pointsList.at(i), pointsList.at(i + 1));
-        }
+        painter.drawEllipse(pointsList.at(i), pointsList[i + 1],5,5);
         i++;
     }
 }
@@ -102,6 +100,14 @@ void FaitMoiDessin::on_btnConnexion_clicked()
     connect(this,SIGNAL(siNouveauPoint(int,int)),threadJeu,SLOT(slNouveauPoint(int,int)));
     //connexion du signal et du slot permettant de dessiner un point à partir du thread
     connect(threadJeu,SIGNAL(siPaint(int, int)),this,SLOT(slPaint(int,int)));
+    connect(threadJeu,SIGNAL(siNouveauMot(int)),this,SLOT(slNouveauMot(int)));
+    connect(threadJeu,SIGNAL(siClient()),this,SLOT(slClient()));
+    //connexion du signal et du slot permettant de transmettre le nom au maitre
+    connect(this,SIGNAL(siSendMot(QByteArray)),threadJeu,SLOT(slGetMot(QByteArray)));
+    //connexion du signal et du slot permettant de transmettre un essais au serveur
+    connect(this,SIGNAL(siEssais(QByteArray)),threadJeu,SLOT(slEssais(QByteArray)));
+    //connexion du signal et du slot permettant de se déconnecter du serveur
+    connect(this,SIGNAL(siDeconnection()),threadJeu,SLOT(slDeconnection()));
     //départ du thread
     threadJeu->start();
 }
@@ -113,4 +119,40 @@ void FaitMoiDessin::slPaint(int x, int y)
     pointsList.append(y);
     //déclenche le paint
     this->repaint();
+}
+
+void FaitMoiDessin::slNouveauMot(int a)
+{
+    QString Mot;
+    Mot = motList.at(a);
+    m_mot.append(Mot);
+    ui->lblx->setText("Vous etes le maitre, vous devez dessiner : ");
+    ui->lbly->setText(Mot);
+    emit(siSendMot(m_mot));
+}
+
+void FaitMoiDessin::slClient()
+{
+    ui->lblx->setText("Vous etes le joueur");
+    ui->btnEssai->setVisible(true);
+    ui->txtEssai->setVisible(true);
+}
+
+void FaitMoiDessin::on_btnEssai_clicked()
+{
+    QByteArray Essais;
+    QString test;
+    if(ui->btnEssai->text() != "")
+    {
+        Essais.clear();
+        test = ui->txtEssai->text();
+        Essais.append(test);
+        emit(siEssais(Essais));
+    }
+}
+
+void FaitMoiDessin::on_btnDeco_clicked()
+{
+    //émettre le signal de déconnexion
+    emit(siDeconnection());
 }

@@ -19,13 +19,19 @@ public:
     void run();
 signals:
     void siPaint(int, int);
+    void siNouveauMot(int);
+    void siClient();
 public slots:
     void slNouveauPoint(int, int);
+    void slGetMot(QString);
+    void slEssais(QByteArray);
+    void slDeconnection();
 private:
     QTcpSocket m_socket;
     QByteArray m_baRole, m_baPoints;
     QString m_ip;
-    
+    QByteArray m_Mot;
+    bool m_Connection;
 };
 
 #endif // THJEU_H

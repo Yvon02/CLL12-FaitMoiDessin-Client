@@ -470,27 +470,27 @@
    <widget class="QLabel" name="lblx">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>160</x>
       <y>550</y>
-      <width>61</width>
-      <height>15</height>
+      <width>271</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="lbly">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>450</x>
       <y>550</y>
-      <width>61</width>
-      <height>15</height>
+      <width>141</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="txtAdresse">
@@ -517,6 +517,42 @@
     </property>
     <property name="text">
      <string>Connexion</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtEssai">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>550</y>
+      <width>161</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnEssai">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>550</y>
+      <width>83</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Essai</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnDeco">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>550</y>
+      <width>121</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Déconnexion</string>
     </property>
    </widget>
   </widget>

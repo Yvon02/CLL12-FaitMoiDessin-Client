@@ -16,11 +16,12 @@ void thJeu::run()
     m_socket.connectToHost(m_ip, 61500);                        // se connecte au serveur
     m_socket.waitForReadyRead();                                // attend une réponse du serveur
     m_baRole = m_socket.read(m_socket.bytesAvailable());        // recoit la réponse
+    QByteArray Point;
     if(m_baRole== "M")
     {
         while(1)
         {
-            if(m_baPoints.length()==4)
+           /* if(m_baPoints.length()==4)
             {
                 //envoi les points dessinés au serveur
                 m_socket.write(m_baPoints);
@@ -30,6 +31,16 @@ void thJeu::run()
             else
             {
                 m_baPoints.clear();
+            }*/
+            if(m_baPoints.size() >= 4)
+            {
+                while(m_baPoints.size() >= 4)
+                {
+                    Point = m_baPoints.left(4);
+                    m_socket.write(Point);
+                    m_socket.waitForBytesWritten();
+                    m_baPoints.remove(0,4);
+                }
             }
         }
     }
